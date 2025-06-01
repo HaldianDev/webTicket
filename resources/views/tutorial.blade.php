@@ -4,17 +4,10 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             @forelse($tutorials as $tutorial)
-                @php
-                    $videoId = null;
-                    if (preg_match('/v=([^&]+)/', $tutorial->youtube_url, $matches)) {
-                        $videoId = $matches[1];
-                    }
-                @endphp
-
                 <div class="bg-white shadow-md hover:shadow-xl rounded-2xl overflow-hidden transform transition duration-300 hover:-translate-y-1 hover:ring hover:ring-blue-100">
-                    @if ($videoId)
+                    @if ($tutorial->videoId)
                         <a href="{{ $tutorial->youtube_url }}" target="_blank">
-                            <img src="https://img.youtube.com/vi/{{ $videoId }}/mqdefault.jpg" alt="{{ $tutorial->title }}" class="w-full h-32 object-cover hover:scale-105 transition-transform duration-300">
+                            <img src="https://img.youtube.com/vi/{{ $tutorial->videoId }}/mqdefault.jpg" alt="{{ $tutorial->title }}" class="w-full h-32 object-cover hover:scale-105 transition-transform duration-300">
                         </a>
                     @endif
                     <div class="p-3">
@@ -24,11 +17,10 @@
                         <p class="text-xs text-gray-600 mt-1">
                             {{ Str::limit($tutorial->description, 60) }}
                         </p>
-                    <a href="{{ $tutorial->youtube_url }}" target="_blank"
-                         class="inline-block mt-2 px-4 py-2 text-xs font-semibold text-white bg-green-600 rounded-md hover:bg-green-700 transition shadow-sm">
-                        🎥 Tonton Video
-                    </a>
-
+                        <a href="{{ $tutorial->youtube_url }}" target="_blank"
+                            class="inline-block mt-2 px-4 py-2 text-xs font-semibold text-white bg-green-600 rounded-md hover:bg-green-700 transition shadow-sm">
+                            🎥 Tonton Video
+                        </a>
                     </div>
                 </div>
             @empty

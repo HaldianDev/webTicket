@@ -9,8 +9,17 @@ class TutorialController extends Controller
 {
     public function index()
     {
-        $tutorials = Tutorial::latest()->get();
+        $tutorials = Tutorial::latest()->get()->map(function ($tutorial) {
+            $videoId = null;
+            if (preg_match('/v=([^&]+)/', $tutorial->youtube_url, $matches)) {
+                $videoId = $matches[1];
+            }
 
-        return view('tutotial', compact('tutorials'));
+            $tutorial->videoId = $videoId;
+
+            return $tutorial;
+        });
+
+        return view('tutorial', compact('tutorials'));
     }
 }
