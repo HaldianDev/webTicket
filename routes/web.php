@@ -14,7 +14,7 @@ use App\Http\Controllers\FileController;
 Route::get('/', fn () => view('auth.login'));
 
 // =============== ADMIN ===============
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
 
     Route::get('statistik', [AdminDaftarPengaduanController::class, 'statistik'])->name('statistik');
 
@@ -37,7 +37,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 });
 
 // =============== USER ===============
-Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
