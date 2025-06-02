@@ -40,7 +40,11 @@ class LayananController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
-                    $validated['gambar'] = $request->file('gambar')->store('layanan', 'public');
+            $file = $request->file('gambar');
+            // dd(Storage::disk('s3')->put('test.txt', 'coba upload ke minio'));
+            $path = $file->store('layanan', 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $validated['gambar'] = $path;
         }
 
         Layanan::create($validated);
@@ -68,12 +72,15 @@ class LayananController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama
-            if ($layanan->gambar && Storage::disk('public')->exists($layanan->gambar)) {
-                Storage::disk('public')->delete($layanan->gambar);
+            // Hapus gambar lama jika ada di S3
+            if ($layanan->gambar && Storage::disk('s3')->exists($layanan->gambar)) {
+                Storage::disk('s3')->delete($layanan->gambar);
             }
 
-            $validated['gambar'] = $request->file('gambar')->store('layanan', 'public');
+            $file = $request->file('gambar');
+            $path = $file->store('layanan', 's3'); // simpan ke S3
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $validated['gambar'] = $path;
         }
 
         $layanan->update($validated);

@@ -111,22 +111,34 @@
                     </form>
                 </div>
 
-                <div class="lg:col-span-2 mt-4">
+                {{-- View Gambar dan PDF --}}
+               <div class="lg:col-span-2 mt-4">
                     <h3 class="text-sm font-semibold text-gray-600 mb-2">File Lampiran</h3>
-                    @if ($pengaduan->file_path)
+
+                    @if ($pengaduan->file_url)
                         <div class="border rounded-md p-3 bg-gray-50 text-center">
-                            <a href="{{ asset('storage/' . $pengaduan->file_path) }}" target="_blank" rel="noopener noreferrer">
-                                <img src="{{ asset('storage/' . $pengaduan->file_path) }}" class="max-h-80 mx-auto object-contain" alt="Lampiran Pengaduan"/>
-                            </a>
+                            @if (in_array($pengaduan->file_ext, ['jpg', 'jpeg', 'png']))
+                                <a href="{{ $pengaduan->file_url }}" target="_blank">
+                                    <img src="{{ $pengaduan->file_url }}" class="max-h-80 mx-auto object-contain" />
+                                </a>
+                            @elseif ($pengaduan->file_ext === 'pdf')
+                                <iframe src="{{ $pengaduan->file_url }}" class="w-full h-96" frameborder="0"></iframe>
+                            @else
+                                <p class="text-red-500">
+                                    File tidak dapat ditampilkan. Silakan
+                                    <a href="{{ $pengaduan->file_url }}" download class="text-indigo-600 underline">unduh file</a>.
+                                </p>
+                            @endif
+
                             <p class="mt-2 text-sm text-gray-500">
-                                Klik gambar untuk melihat atau
-                                <a href="{{ asset('storage/' . $pengaduan->file_path) }}" download class="text-indigo-600 underline">unduh file</a>.
+                                <a href="{{ $pengaduan->file_url }}" download class="text-indigo-600 underline">Unduh file</a>
                             </p>
                         </div>
                     @else
                         <p class="text-gray-400 italic">Tidak ada file lampiran.</p>
                     @endif
                 </div>
+
             </div>
 
             <div class="flex justify-between items-center mt-8">

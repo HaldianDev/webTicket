@@ -5,8 +5,9 @@
                 @foreach ($layanans as $layanan)
                     <div class="bg-white p-5 rounded-[7px] shadow-lg hover:shadow-xl border border-blue-200 transition transform hover:-translate-y-1 flex gap-4">
                         <div class="flex-shrink-0 flex items-center justify-center">
-                            <img src="{{ $layanan->gambar ?? 'https://tulangbawangkab.go.id/img/logo/logo.png' }}"
-                                 alt="Icon {{ $layanan->nama_layanan }}" class="w-16 h-16 object-contain">
+                           <img src="{{ $layanan->gambar ? asset('storage/'.$layanan->gambar) : 'https://tulangbawangkab.go.id/img/logo/logo.png' }}"
+                            alt="Icon {{ $layanan->nama_layanan }}" class="w-16 h-16 object-contain">
+
                         </div>
                         <div class="flex flex-col justify-between flex-grow">
                             <div>

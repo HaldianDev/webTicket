@@ -10,8 +10,8 @@ class FileController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $filename
+     * @param  \Illuminate\Http\Request
+     * @param  string
      * @return \Illuminate\Http\Response
      */
     public function __invoke(Request $request, $filename)
@@ -23,8 +23,8 @@ class FileController extends Controller
             abort(404);
         }
 
-        // Path file di dalam bucket MinIO (misalnya di folder 'categories')
-        $path = "categories/{$filename}";
+
+        $path = "openTicket/{$filename}";
 
         // Periksa apakah file ada
         if (!Storage::disk('s3')->exists($path)) {
@@ -38,7 +38,7 @@ class FileController extends Controller
         return response()->stream(function () use ($path) {
             $stream = Storage::disk('s3')->readStream($path);
             while (!feof($stream)) {
-                echo fread($stream, 1024 * 8); // baca 8KB per loop
+                echo fread($stream, 1024 * 8);
             }
             fclose($stream);
         }, 200, [

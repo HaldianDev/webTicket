@@ -36,50 +36,35 @@
                     </div>
                 </div>
 
+                {{-- View Gambar dan PDF --}}
                 <div class="lg:col-span-2 mt-4">
                     <h3 class="text-sm font-semibold text-gray-600 mb-2">File Lampiran</h3>
-                    @if ($pengaduan->file_path)
+
+                    @if ($pengaduan->file_url)
                         <div class="border rounded-md p-3 bg-gray-50 text-center">
-                            <a href="{{ asset('storage/' . $pengaduan->file_path) }}" target="_blank">
-                                <img src="{{ asset('storage/' . $pengaduan->file_path) }}" class="max-h-80 mx-auto object-contain" />
-                            </a>
+                            @if (in_array($pengaduan->file_ext, ['jpg', 'jpeg', 'png']))
+                                <a href="{{ $pengaduan->file_url }}" target="_blank">
+                                    <img src="{{ $pengaduan->file_url }}" class="max-h-80 mx-auto object-contain" />
+                                </a>
+                            @elseif ($pengaduan->file_ext === 'pdf')
+                                <iframe src="{{ $pengaduan->file_url }}" class="w-full h-96" frameborder="0"></iframe>
+                            @else
+                                <p class="text-red-500">
+                                    File tidak dapat ditampilkan. Silakan
+                                    <a href="{{ $pengaduan->file_url }}" download class="text-indigo-600 underline">unduh file</a>.
+                                </p>
+                            @endif
+
                             <p class="mt-2 text-sm text-gray-500">
-                                Klik gambar untuk melihat atau
-                                <a href="{{ asset('storage/' . $pengaduan->file_path) }}" download class="text-indigo-600 underline">unduh file</a>.
+                                <a href="{{ $pengaduan->file_url }}" download class="text-indigo-600 underline">Unduh file</a>
                             </p>
                         </div>
                     @else
                         <p class="text-gray-400 italic">Tidak ada file lampiran.</p>
                     @endif
                 </div>
-            </div>
 
-            <!-- Komentar -->
-            <div class="mt-10 border-t pt-6">
-                <h3 class="text-xl font-semibold mb-4">Komentar</h3>
 
-                @foreach ($pengaduan->comments as $comment)
-                    <div class="mb-3 p-4 rounded-md {{ $comment->user_id === auth()->id() ? 'bg-blue-50' : 'bg-gray-100' }}">
-                        <p class="text-sm text-gray-600">
-                            <strong>{{ $comment->user->name }}</strong>
-                            <span class="text-xs text-gray-500">({{ $comment->created_at->diffForHumans() }})</span>
-                        </p>
-                        <p class="text-gray-800 mt-1">{{ $comment->message }}</p>
-                    </div>
-                @endforeach
-
-                <form method="POST" action="{{ route('pengaduan.comment', $pengaduan) }}" class="mt-4">
-                    @csrf
-                    <textarea name="message" rows="3" required
-                              class="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
-                              placeholder="Tulis komentar..."></textarea>
-                    <div class="mt-2 text-right">
-                        <button type="submit"
-                                class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
-                            Kirim
-                        </button>
-                    </div>
-                </form>
             </div>
 
             <!-- Tombol Kembali dan Edit -->

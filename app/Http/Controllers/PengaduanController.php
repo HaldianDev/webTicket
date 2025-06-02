@@ -45,8 +45,19 @@ class PengaduanController extends Controller
     {
         $pengaduan = $this->mapColors($pengaduan);
 
+        // Tambahan untuk file
+        if ($pengaduan->file_path) {
+            $ext = strtolower(pathinfo($pengaduan->file_path, PATHINFO_EXTENSION));
+            $pengaduan->file_ext = $ext;
+            $pengaduan->file_url = asset('storage/' . $pengaduan->file_path);
+        } else {
+            $pengaduan->file_ext = null;
+            $pengaduan->file_url = null;
+        }
+
         return view('pengaduan.show', compact('pengaduan'));
     }
+
 
     public function edit(Pengaduan $pengaduan)
     {

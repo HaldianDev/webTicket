@@ -81,6 +81,19 @@ class DaftarPengaduanController extends Controller
 
     public function show(Pengaduan $pengaduan)
     {
+
+        $pengaduan = $this->mapColors($pengaduan);
+
+        // Tambahan untuk file
+        if ($pengaduan->file_path) {
+            $ext = strtolower(pathinfo($pengaduan->file_path, PATHINFO_EXTENSION));
+            $pengaduan->file_ext = $ext;
+            $pengaduan->file_url = asset('storage/' . $pengaduan->file_path);
+        } else {
+            $pengaduan->file_ext = null;
+            $pengaduan->file_url = null;
+        }
+
         $statuses = [
             'pending' => 'Pending',
             'diproses' => 'Diproses',
@@ -135,7 +148,7 @@ class DaftarPengaduanController extends Controller
         ));
     }
 
-        private function mapColors($pengaduan)
+    private function mapColors($pengaduan)
     {
         $kategoriColor = [
             'low'    => 'bg-green-100 text-green-700',

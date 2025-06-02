@@ -7,6 +7,7 @@ use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class LayananController extends Controller
 {
@@ -35,8 +36,7 @@ class LayananController extends Controller
         $validNamaLayanan = Layanan::pluck('nama_layanan')->toArray();
 
         $validated = $request->validate([
-            // 'nama_layanan' => 'required|string|max:255',
-            'nama_layanan' => ['required', Rule::in($validNamaLayanan)],
+            'nama_layanan' => 'required|string|max:255',
             'deskripsi'    => 'required|string',
             'gambar'       => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -71,9 +71,10 @@ class LayananController extends Controller
             'gambar'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($layanan->gambar) {
+            // Hapus gambar lama
+            if ($layanan->gambar && Storage::disk('public')->exists($layanan->gambar)) {
                 Storage::disk('public')->delete($layanan->gambar);
             }
 
