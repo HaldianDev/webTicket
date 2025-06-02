@@ -20,52 +20,56 @@
             </div>
         </div>
 
+        {{-- SEARCH --}}
+        <div class="mb-4">
+            <input type="text" id="searchTiket" placeholder="Cari tiket..."
+                class="w-full border p-2 rounded-md" />
+        </div>
+
         <!-- Tiket Terbaru & Distribusi Status side by side -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Tiket Terbaru -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-2xl font-semibold mb-4 border-b pb-2 border-indigo-500">Tiket Terbaru</h2>
            <ul id="listTiket" class="divide-y divide-gray-200 max-h-[400px] overflow-y-auto">
-    @foreach ($terbaru as $tiket)
-        <li class="py-3 flex justify-between items-center hover:bg-indigo-50 rounded px-2 transition cursor-pointer"
-            data-id="{{ $tiket->id }}">
-            <div>
-                <p class="font-semibold text-gray-800">{{ $tiket->jenis_laporan }}</p>
-                <span class="text-xs text-gray-400">{{ $tiket->ticket_number }}</span>
+                @foreach ($terbaru as $tiket)
+                    <li class="py-3 flex justify-between items-center hover:bg-indigo-50 rounded px-2 transition cursor-pointer"
+                        data-id="{{ $tiket->id }}">
+                        <div>
+                            <p class="font-semibold text-gray-800">{{ $tiket->jenis_laporan }}</p>
+                            <span class="text-xs text-gray-400">{{ $tiket->ticket_number }}</span>
+                        </div>
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full
+                            {{ $tiket->status === 'open' ? 'bg-blue-100 text-blue-800' : '' }}
+                            {{ $tiket->status === 'onprogress' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                            {{ $tiket->status === 'resolved' ? 'bg-green-100 text-green-800' : '' }}
+                            {{ $tiket->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}
+                        ">
+                            {{ ucfirst($tiket->status) }}
+                        </span>
+                    </li>
+                @endforeach
+            </ul>
+                <!-- Container komentar -->
+                <div id="komentarContainer" class="mt-10 border-t pt-6 hidden">
+                    <h3 id="judulKomentar" class="text-xl font-semibold mb-4">Komentar {{ $tiket->ticket_number }}</h3>
+
+                    <div id="listKomentar" class="space-y-4"></div>
+
+                    <form id="formKomentar" method="POST" class="mt-4 hidden">
+                        @csrf
+                        <textarea name="message" rows="3" required
+                                class="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
+                                placeholder="Tulis komentar..."></textarea>
+                        <div class="mt-2 text-right">
+                            <button type="submit"
+                                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+                                Kirim
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <span class="text-xs font-semibold px-3 py-1 rounded-full
-                {{ $tiket->status === 'open' ? 'bg-blue-100 text-blue-800' : '' }}
-                {{ $tiket->status === 'onprogress' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                {{ $tiket->status === 'resolved' ? 'bg-green-100 text-green-800' : '' }}
-                {{ $tiket->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}
-            ">
-                {{ ucfirst($tiket->status) }}
-            </span>
-        </li>
-    @endforeach
-</ul>
-
-<!-- Container komentar -->
-<div id="komentarContainer" class="mt-10 border-t pt-6 hidden">
-    <h3 class="text-xl font-semibold mb-4">Komentar</h3>
-    <div id="listKomentar" class="space-y-4"></div>
-
-    <form id="formKomentar" method="POST" class="mt-4 hidden">
-        @csrf
-        <textarea name="message" rows="3" required
-                  class="w-full p-3 border rounded-md focus:outline-none focus:ring focus:ring-indigo-300"
-                  placeholder="Tulis komentar..."></textarea>
-        <div class="mt-2 text-right">
-            <button type="submit"
-                    class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
-                Kirim
-            </button>
-        </div>
-    </form>
-</div>
-
-            </div>
-
             <!-- Distribusi Status Chart -->
             <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
                 <h2 class="text-2xl font-semibold mb-4 border-b pb-2 border-indigo-500 w-full text-center">Distribusi Status</h2>
@@ -139,6 +143,11 @@
             li.addEventListener('click', () => {
                 const id = li.getAttribute('data-id');
                 currentPengaduanId = id;
+                // Ambil ticket_number dari elemen li atau simpan di data attribute
+                const ticketNumber = li.querySelector('span.text-xs.text-gray-400').textContent;
+
+                // Update judul komentar
+                document.getElementById('judulKomentar').textContent = `Komentar ${ticketNumber}`;
                 fetchComments(id);
                 komentarContainer.classList.remove('hidden');
                 formKomentar.classList.remove('hidden');
@@ -193,6 +202,28 @@
                     alert('Gagal mengirim komentar');
                 }
             }).catch(() => alert('Gagal mengirim komentar'));
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchTiket');
+        const listTiket = document.getElementById('listTiket');
+        const tiketItems = Array.from(listTiket.querySelectorAll('li'));
+
+        searchInput.addEventListener('input', () => {
+            const filter = searchInput.value.toLowerCase();
+
+            tiketItems.forEach(li => {
+                // Bisa cari berdasarkan jenis laporan dan nomor tiket
+                const jenisLaporan = li.querySelector('p.font-semibold')?.textContent.toLowerCase() || '';
+                const ticketNumber = li.querySelector('span.text-xs.text-gray-400')?.textContent.toLowerCase() || '';
+
+                if (jenisLaporan.includes(filter) || ticketNumber.includes(filter)) {
+                    li.style.display = '';
+                } else {
+                    li.style.display = 'none';
+                }
+            });
         });
     });
 

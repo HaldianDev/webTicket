@@ -20,6 +20,12 @@
             </div>
         </div>
 
+        {{-- SEARCH --}}
+        <div class="mb-4">
+            <input type="text" id="searchTiket" placeholder="Cari tiket..."
+                class="w-full border p-2 rounded-md" />
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Tiket Terbaru -->
             <div class="bg-white p-6 rounded-lg shadow-md">
@@ -45,7 +51,8 @@
 
                 <!-- Container komentar -->
                 <div id="komentarContainer" class="mt-10 border-t pt-6 hidden">
-                    <h3 class="text-xl font-semibold mb-4">Komentar</h3>
+                    <h3 id="judulKomentar" class="text-xl font-semibold mb-4">Komentar {{ $tiket->ticket_number }}</h3>
+
                     <div id="listKomentar" class="space-y-4"></div>
 
                     <form id="formKomentar" method="POST" class="mt-4 hidden">
@@ -137,6 +144,10 @@
                 li.addEventListener('click', () => {
                     const id = li.getAttribute('data-id');
                     currentTiketId = id;
+                    // Ambil ticket_number dari elemen li atau simpan di data attribute
+                    const ticketNumber = li.querySelector('span.text-xs.text-gray-400').textContent;
+                    // Update judul komentar
+                    document.getElementById('judulKomentar').textContent = `Komentar ${ticketNumber}`;
                     fetchComments(id);
                     komentarContainer.classList.remove('hidden');
                     formKomentar.classList.remove('hidden');
@@ -193,5 +204,28 @@
                 }).catch(() => alert('Gagal mengirim komentar'));
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchTiket');
+            const listTiket = document.getElementById('listTiket');
+            const tiketItems = Array.from(listTiket.querySelectorAll('li'));
+
+            searchInput.addEventListener('input', () => {
+                const filter = searchInput.value.toLowerCase();
+
+                tiketItems.forEach(li => {
+                    // Bisa cari berdasarkan jenis laporan dan nomor tiket
+                    const jenisLaporan = li.querySelector('p.font-semibold')?.textContent.toLowerCase() || '';
+                    const ticketNumber = li.querySelector('span.text-xs.text-gray-400')?.textContent.toLowerCase() || '';
+
+                    if (jenisLaporan.includes(filter) || ticketNumber.includes(filter)) {
+                        li.style.display = '';
+                    } else {
+                        li.style.display = 'none';
+                    }
+                });
+            });
+        });
+
     </script>
 </x-app-layout>

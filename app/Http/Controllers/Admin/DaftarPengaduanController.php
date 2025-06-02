@@ -133,7 +133,7 @@ class DaftarPengaduanController extends Controller
                 return $item->created_at->diffInHours($item->updated_at);
             })->avg();
 
-        $terbaru = Pengaduan::latest()->take(3)->get()->map(fn ($item) => $this->mapColors($item));
+        $terbaru = Pengaduan::latest()->get()->map(fn ($item) => $this->mapColors($item));
 
         $statusDistribusi = [
             'open'       => Pengaduan::where('status', 'pending')->count(),
