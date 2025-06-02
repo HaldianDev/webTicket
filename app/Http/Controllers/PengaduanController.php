@@ -19,7 +19,9 @@ class PengaduanController extends Controller
 
     public function store(Request $request)
     {
+                // dd('halo');
         $validated = $this->validateRequest($request);
+
 
         $filePath = $request->file('file')->store('uploads', 'public');
 
@@ -130,8 +132,18 @@ class PengaduanController extends Controller
 
     private function validateRequest(Request $request): array
     {
+
         return $request->validate([
-            'jenis_laporan' => 'required|string|max:255',
+                'jenis_laporan' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    function ($attribute, $value, $fail) {
+                        if (!DB::table('layanans')->where('nama_layanan', $value)->exists()) {
+                            $fail('Jenis layanan tidak valid');
+                        }
+                    }
+                ],
             'kategori'      => 'required|string|max:255',
             'keterangan'    => 'required|string',
             'phone'         => ['required', 'string', 'regex:/^(?:\+62|0)8[1-9][0-9]{6,10}$/'],
@@ -143,6 +155,8 @@ class PengaduanController extends Controller
             'file.mimes'    => 'File harus berupa jpeg, jpg, png, atau pdf.',
             'file.max'      => 'Ukuran file maksimal 2MB.',
         ]);
+
+
     }
 
     private function generateTicketNumber(): string
@@ -234,58 +248,52 @@ class PengaduanController extends Controller
         ]);
     }
 
-
     public function statistik()
-{
-    $userId = auth()->id();
+    {
+        $userId = auth()->id();
 
-    $total = Pengaduan::where('user_id', $userId)->count();
+        $total = Pengaduan::where('user_id', $userId)->count();
 
-    $aktif = Pengaduan::where('user_id', $userId)
-        ->whereIn('status', ['pending', 'diproses'])
-        ->count();
+        $aktif = Pengaduan::where('user_id', $userId)
+            ->whereIn('status', ['pending', 'diproses'])
+            ->count();
 
-    $selesai = Pengaduan::where('user_id', $userId)
-        ->where('status', 'selesai')
-        ->count();
+        $selesai = Pengaduan::where('user_id', $userId)
+            ->where('status', 'selesai')
+            ->count();
 
-    $ditolak = Pengaduan::where('user_id', $userId)
-        ->where('status', 'ditolak')
-        ->count();
+        $ditolak = Pengaduan::where('user_id', $userId)
+            ->where('status', 'ditolak')
+            ->count();
 
-    $rataRataJam = Pengaduan::where('user_id', $userId)
-        ->where('status', 'selesai')
-        ->whereNotNull('updated_at')
-        ->get()
-        ->map(fn($item) => $item->created_at->diffInHours($item->updated_at))
-        ->avg();
+        $rataRataJam = Pengaduan::where('user_id', $userId)
+            ->where('status', 'selesai')
+            ->whereNotNull('updated_at')
+            ->get()
+            ->map(fn($item) => $item->created_at->diffInHours($item->updated_at))
+            ->avg();
 
-    $terbaru = Pengaduan::where('user_id', $userId)
-        ->latest()
-        ->take(3)
-        ->get()
-        ->map(fn($item) => $this->mapColors($item));
+        $terbaru = Pengaduan::where('user_id', $userId)
+            // ->where('status', '!=', 'selesai')
+            ->latest()
+            ->get()
+            ->map(fn($item) => $this->mapColors($item));
 
-    $statusDistribusi = [
-        'open'       => Pengaduan::where('user_id', $userId)->where('status', 'pending')->count(),
-        'onprogress' => Pengaduan::where('user_id', $userId)->where('status', 'diproses')->count(),
-        'resolved'   => Pengaduan::where('user_id', $userId)->where('status', 'selesai')->count(),
-        'rejected'   => Pengaduan::where('user_id', $userId)->where('status', 'ditolak')->count(),
-    ];
+        $statusDistribusi = [
+            'open'       => Pengaduan::where('user_id', $userId)->where('status', 'pending')->count(),
+            'onprogress' => Pengaduan::where('user_id', $userId)->where('status', 'diproses')->count(),
+            'resolved'   => Pengaduan::where('user_id', $userId)->where('status', 'selesai')->count(),
+            'rejected'   => Pengaduan::where('user_id', $userId)->where('status', 'ditolak')->count(),
+        ];
 
-    return view('statistik', compact(
-        'total',
-        'aktif',
-        'selesai',
-        'ditolak',
-        'rataRataJam',
-        'terbaru',
-        'statusDistribusi'
-    ));
-}
-
-
-
-
-
+        return view('statistik', compact(
+            'total',
+            'aktif',
+            'selesai',
+            'ditolak',
+            'rataRataJam',
+            'terbaru',
+            'statusDistribusi'
+        ));
+    }
 }

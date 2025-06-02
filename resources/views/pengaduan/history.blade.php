@@ -82,7 +82,8 @@
             @if(session('success'))
                 Swal.fire({
                     title: 'Berhasil!',
-                    text: {!! json_encode(session('success')) !!},
+                    // text: {!! json_encode(session('success')) !!},
+                    text: "{{ session('success') }}",
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });

@@ -28,6 +28,8 @@
                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                value="{{ request()->query('nama_layanan', old('jenis_laporan')) }}"
                                required>
+
+
                     </div>
 
                     <!-- Keterangan -->
@@ -74,3 +76,4 @@
         </main>
     </div>
 </x-app-layout>
+
