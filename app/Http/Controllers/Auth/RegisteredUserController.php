@@ -1,32 +1,16 @@
 <?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use App\Mail\SendOtpMail;
+use App\Models\Otp;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use App\Models\User;
 
-class RegisteredUserController extends Controller
+class RegisteredUserController
 {
-    /**
-     * Display the registration view.
-     */
-    public function create(): View
-    {
-        return view('auth.register');
-    }
-
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -41,10 +25,18 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        // Generate OTP
+        $otp = rand(100000, 999999);
 
-        Auth::login($user);
+        Otp::create([
+            'user_id' => $user->id,
+            'otp' => $otp,
+            'expires_at' => now()->addMinutes(10),
+        ]);
 
-        return redirect(route('dashboard', absolute: false));
+        Mail::to($user->email)->send(new SendOtpMail($otp));
+
+        return redirect()->route('otp.verify.form', ['user' => $user->id])
+                         ->with('status', 'OTP telah dikirim ke email Anda.');
     }
 }

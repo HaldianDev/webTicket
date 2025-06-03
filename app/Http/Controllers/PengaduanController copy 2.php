@@ -33,8 +33,8 @@ class PengaduanController extends Controller
             'jenis_laporan'  => $validated['jenis_laporan'],
             'kategori'       => $validated['kategori'],
             'keterangan'     => $validated['keterangan'],
-            'nik'          => $validated['nik'],
-            'type'         => $validated['type'],
+            'phone'          => $validated['phone'],
+            'lokasi'         => $validated['lokasi'],
             'file_path'      => $filePath,
             'status'         => 'pending',
         ]);
@@ -134,11 +134,20 @@ class PengaduanController extends Controller
     {
 
         return $request->validate([
-            'jenis_laporan' => 'required|string|max:255',
+                'jenis_laporan' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    function ($attribute, $value, $fail) {
+                        if (!DB::table('layanans')->where('nama_layanan', $value)->exists()) {
+                            $fail('Jenis layanan tidak valid');
+                        }
+                    }
+                ],
             'kategori'      => 'required|string|max:255',
             'keterangan'    => 'required|string',
-            'nik' => ['required', 'string', 'regex:/^[0-9]{18}$/'],
-            'type'        => 'required|string|max:255',
+            'phone'         => ['required', 'string', 'regex:/^(?:\+62|0)8[1-9][0-9]{6,10}$/'],
+            'lokasi'        => 'required|string|max:255',
             'file'          => 'required|file|mimes:jpeg,jpg,png,pdf|max:2048',
         ], [
             'phone.regex'   => 'Nomor telepon harus valid nomor Indonesia.',

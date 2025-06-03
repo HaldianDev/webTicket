@@ -39,21 +39,21 @@
                                   required>{{ $pengaduan->keterangan }}</textarea>
                     </div>
 
-                    <!-- Phone Number -->
+                    <!-- NIK Number -->
                     <div class="mb-4">
-                        <label for="phone" class="block text-gray-700 font-medium mb-2">Nomor Telepon</label>
-                        <input type="text" id="phone" name="phone"
+                        <label for="nik" class="block text-gray-700 font-medium mb-2">Nomor NIK</label>
+                        <input type="text" id="nik" name="nik"
                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               value="{{ $pengaduan->phone }}"
+                               value="{{ $pengaduan->nik }}"
                                required>
                     </div>
 
-                    <!-- Lokasi -->
+                    <!-- Type -->
                     <div class="mb-4">
-                        <label for="lokasi" class="block text-gray-700 font-medium mb-2">Lokasi</label>
-                        <input type="text" id="lokasi" name="lokasi"
+                        <label for="type" class="block text-gray-700 font-medium mb-2">Type</label>
+                        <input type="text" id="type" name="type"
                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               value="{{ $pengaduan->lokasi }}"
+                               value="{{ $pengaduan->type }}"
                                required>
                     </div>
 

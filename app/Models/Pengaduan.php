@@ -14,8 +14,8 @@ class Pengaduan extends Model
         'jenis_laporan',
         'kategori',
         'keterangan',
-        'phone',
-        'lokasi',
+        'nik',
+        'type',
         'file_path',
         'status',
     ];

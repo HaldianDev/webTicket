@@ -51,7 +51,8 @@
 
                 <!-- Container komentar -->
                 <div id="komentarContainer" class="mt-10 border-t pt-6 hidden">
-                    <h3 id="judulKomentar" class="text-xl font-semibold mb-4">Komentar {{ $tiket->ticket_number }}</h3>
+                    {{-- <h3 id="judulKomentar" class="text-xl font-semibold mb-4">Komentar {{ $terbaru->ticket_number }}</h3> --}}
+                    <h3 id="judulKomentar" class="text-xl font-semibold mb-4">Komentar {{ $terbaru->first()?->ticket_number }}</h3>
 
                     <div id="listKomentar" class="space-y-4"></div>
 

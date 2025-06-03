@@ -36,7 +36,9 @@
                                     <td class="px-4 py-2 border">{{ $item->ticket_number }}</td>
 
                                     {{-- JENIS LAPORAN --}}
-                                    <td class="px-4 py-2 border">{{ $item->jenis_laporan }}</td>
+                                    <td class="px-4 py-2 border">
+                                        {{ \Illuminate\Support\Str::of($item->jenis_laporan)->replace('_', ' ')->title() }}
+                                    </td>
 
                                     {{-- KETERANGAN --}}
                                     <td class="px-4 py-2 border">{{ $item->keterangan }}</td>

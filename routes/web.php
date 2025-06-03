@@ -9,9 +9,18 @@ use App\Http\Controllers\Admin\TutorialController as AdminTutorialController;
 use App\Http\Controllers\Admin\LayananController as AdminLayananController;
 use App\Http\Controllers\Admin\DaftarPengaduanController as AdminDaftarPengaduanController;
 use App\Http\Controllers\FileController;
+use OtpController as GlobalOtpController;
+use App\Http\Controllers\OauthController;
 
 // Login page
 Route::get('/', fn () => view('auth.login'));
+Route::get('/verify-otp/{user}', [GlobalOtpController::class, 'showForm'])->name('otp.verify.form');
+Route::post('/verify-otp/{user}', [GlobalOtpController::class, 'verify'])->name('otp.verify');
+// Route untuk redirect ke Google OAuth consent screen
+Route::get('/oauth/google/redirect', [OauthController::class, 'redirectToProvider'])->name('google.redirect');
+
+// Route callback Google setelah login berhasil
+Route::get('/oauth/google/callback', [OauthController::class, 'handleProviderCallback'])->name('google.callback');
 
 // =============== ADMIN ===============
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {

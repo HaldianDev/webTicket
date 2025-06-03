@@ -22,15 +22,25 @@
                     </div>
 
                     <!-- Jenis Laporan -->
-                    <div class="mb-4">
+                    {{-- <div class="mb-4">
                         <label for="jenis_laporan" class="block text-gray-700 font-medium mb-2">Jenis Laporan</label>
                         <input type="text" id="jenis_laporan" name="jenis_laporan"
                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                value="{{ request()->query('nama_layanan', old('jenis_laporan')) }}"
                                required>
+                    </div> --}}
 
-
+                    <div class="mb-4">
+                        <label for="jenis_laporan" class="block text-gray-700 font-medium mb-2">Jenis Laporan</label>
+                        <select id="jenis_laporan" name="jenis_laporan"
+                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required>
+                            <option value="">-- Pilih Jenis Laporan --</option>
+                            <option value="milik_sendiri" {{ (request()->query('jenis_laporan') ?? old('jenis_laporan')) == 'milik_sendiri' ? 'selected' : '' }}>Milik Sendiri</option>
+                            <option value="milik_orang_lain" {{ (request()->query('jenis_laporan') ?? old('jenis_laporan')) == 'milik_orang_lain' ? 'selected' : '' }}>Milik Orang Lain</option>
+                        </select>
                     </div>
+
 
                     <!-- Keterangan -->
                     <div class="mb-4">
@@ -40,22 +50,32 @@
                                   required>{{ old('keterangan') }}</textarea>
                     </div>
 
-                    <!-- Phone Number -->
+                    <!-- Nik Number -->
                     <div class="mb-4">
-                        <label for="phone" class="block text-gray-700 font-medium mb-2">Nomor Telepon</label>
-                        <input type="text" id="phone" name="phone"
+                        <label for="nik" class="block text-gray-700 font-medium mb-2">Nomor NIK</label>
+                        <input type="text" id="nik" name="nik"
                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('phone') }}"
+                               value="{{ old('nik') }}"
                                required>
                     </div>
 
-                    <!-- Lokasi -->
-                    <div class="mb-4">
-                        <label for="lokasi" class="block text-gray-700 font-medium mb-2">Lokasi</label>
-                        <input type="text" id="lokasi" name="lokasi"
+                    <!-- Type -->
+                    {{-- <div class="mb-4">
+                        <label for="type" class="block text-gray-700 font-medium mb-2">type</label>
+                        <input type="text" id="type" name="type"
                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               value="{{ old('lokasi') }}"
+                               value="{{ old('type') }}"
                                required>
+                    </div> --}}
+                    <div class="mb-4">
+                        <label for="type" class="block text-gray-700 font-medium mb-2">Type</label>
+                        <select id="type" name="type"
+                                class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required>
+                            <option value="">-- Pilih Platform --</option>
+                            <option value="android" {{ old('type') == 'android' ? 'selected' : '' }}>Android</option>
+                            <option value="ios" {{ old('type') == 'ios' ? 'selected' : '' }}>iOS</option>
+                        </select>
                     </div>
 
                     <!-- File -->

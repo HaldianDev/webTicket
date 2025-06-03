@@ -29,9 +29,9 @@
                 <x-detail-item label="Nomor Tiket" :value="$pengaduan->ticket_number ?? '-'" />
                 <x-detail-item label="Nama Pengguna" :value="$pengaduan->user->name ?? '-'" />
                 <x-detail-item label="Jenis Laporan" :value="$pengaduan->jenis_laporan ?? '-'" />
-                <x-detail-item label="Nomor Telepon" :value="$pengaduan->phone ?? '-'" />
+                <x-detail-item label="Nomor NIK" :value="$pengaduan->nik ?? '-'" />
                 <x-detail-item label="Tanggal" :value="\Carbon\Carbon::parse($pengaduan->created_at)->format('d-m-Y H:i')" />
-                <x-detail-item label="Lokasi" :value="$pengaduan->lokasi ?? '-'" />
+                <x-detail-item label="Type" :value="$pengaduan->type ?? '-'" />
 
                 <div class="lg:col-span-2">
                     <h3 class="text-sm font-semibold text-gray-600 mb-1">Keterangan</h3>

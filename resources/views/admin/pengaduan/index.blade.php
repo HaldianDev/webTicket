@@ -32,7 +32,9 @@
                                 <tr class="text-center">
                                         <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                                         <td class="px-4 py-2 border">{{ $item->ticket_number }}</td>
-                                        <td class="px-4 py-2 border">{{ $item->jenis_laporan }}</td>
+                                        <td class="px-4 py-2 border">
+                                            {{ \Illuminate\Support\Str::of($item->jenis_laporan)->replace('_', ' ')->title() }}
+                                        </td>
                                         <td class="px-4 py-2 border">{{ $item->keterangan }}</td>
                                         <td class="px-4 py-2 border">
                                             <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $item->kategori_color }}">

@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pengaduans', function (Blueprint $table) {
+            Schema::create('otps', function (Blueprint $table) {
             $table->id();
-            $table->string('kategori');
-            $table->text('keterangan');
-            $table->string('nik');
-            $table->string('type');
-            $table->string('file_path')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('otp');
+            $table->timestamp('expires_at');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pengaduans');
+        Schema::dropIfExists('otps');
     }
 };
