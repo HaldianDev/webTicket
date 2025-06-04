@@ -137,7 +137,7 @@ class PengaduanController extends Controller
             'jenis_laporan' => 'required|string|max:255',
             'kategori'      => 'required|string|max:255',
             'keterangan'    => 'required|string',
-            'nik' => ['required', 'string', 'regex:/^[0-9]{18}$/'],
+            'nik' => ['required', 'string', 'regex:/^[0-9]{16}$/'],
             'type'        => 'required|string|max:255',
             'file'          => 'required|file|mimes:jpeg,jpg,png,pdf|max:2048',
         ], [
@@ -146,7 +146,6 @@ class PengaduanController extends Controller
             'file.mimes'    => 'File harus berupa jpeg, jpg, png, atau pdf.',
             'file.max'      => 'Ukuran file maksimal 2MB.',
         ]);
-
 
     }
 
